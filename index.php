@@ -2,7 +2,7 @@
 ini_set('display_errors', 1);
 ini_set('error_reporting', E_ALL);
 
-$FONT_NAME = "LATIN";
+$FONT_NAME = "RUMI";
 $INT_IMG_FONT = array(
 	"0" => imagecreatefrompng(__DIR__."/FONT/".$FONT_NAME."/0.png"),
 	"1" => imagecreatefrompng(__DIR__."/FONT/".$FONT_NAME."/1.png"),
@@ -16,14 +16,23 @@ $INT_IMG_FONT = array(
 	"9" => imagecreatefrompng(__DIR__."/FONT/".$FONT_NAME."/9.png"),
 );
 
-$AC_DATA = array(2,5,6,5,1,2);
+//アクセスカウンターのデータ
+$AC_DATA = json_decode(file_get_contents(__DIR__."/SAVE/COUNT.json"), true);
+
+//インクリメント
+$AC_DATA["COUNT"]++;
+
+//保存
+file_put_contents(__DIR__."/SAVE/COUNT.json", json_encode($AC_DATA));
 
 //画像を作る
 $IMG = imagecreatetruecolor(100,30);
 imagefilledrectangle($IMG, 0, 0, 599, 399, 0x00000);
 
+//画像に数字を貼り付ける
 $X = 0;//X軸
-foreach($AC_DATA as $COUNT){
+//数字をStringにして配列化して色々してる
+foreach(array_map("intval", str_split((string)$AC_DATA["COUNT"])) as $COUNT){
 	//画像を貼っつける
 	imagecopy($IMG, $INT_IMG_FONT[$COUNT], ($X * 1.5), 0, 0, 0, 15, 25);
 
